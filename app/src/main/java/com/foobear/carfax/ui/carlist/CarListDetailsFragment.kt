@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
@@ -92,7 +93,8 @@ class CarListDetailsFragment : Fragment(), KodeinAware {
     }
 
     private fun goToCarDetails(carDetailsData: CarDetailsData){
-        navController.navigate(R.id.action_carListDetailsFragment_to_carDetailsFragment)
+        val bundle = bundleOf("vin" to carDetailsData.vin)
+        navController.navigate(R.id.action_carListDetailsFragment_to_carDetailsFragment, bundle)
     }
 
     override fun onDestroy() {

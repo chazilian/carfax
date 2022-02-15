@@ -76,7 +76,8 @@ class CarDetailsFragment : Fragment(), KodeinAware {
     }
 
     private fun initView() {
-        val disposable = viewModel.getSingleCarDetail("JC1NFAEK5J0138717")
+        val vin = arguments?.get("vin").toString()
+        val disposable = viewModel.getSingleCarDetail(vin)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { carDetailsData ->

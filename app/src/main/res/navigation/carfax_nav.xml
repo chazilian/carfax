@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_carDetailsFragment_to_carListDetailsFragment"
             app:destination="@id/carListDetailsFragment" />
+        <argument
+            android:name="vin"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/carListDetailsFragment"
