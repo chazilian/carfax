@@ -1,30 +1,28 @@
 package com.foobear.carfax.data.datasource
 
-import android.util.Log
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.LiveDataReactiveStreams
+import androidx.lifecycle.MediatorLiveData
 import com.foobear.carfax.data.CarFaxApi
 import com.foobear.carfax.data.models.CarDetailsListingsRequest
-import com.foobear.carfax.util.Resource
+import io.reactivex.rxjava3.schedulers.Schedulers
+
 
 class CarDetailsDataSourceImpl(private val carFaxApi: CarFaxApi): CarDetailsDataSource {
 
-    private val _downloadedCarDetails = MutableLiveData<CarDetailsListingsRequest>()
+    private val _downloadedCarDetails = MediatorLiveData<CarDetailsListingsRequest>()
     override  val downloadedCarDetailsRequest: LiveData<CarDetailsListingsRequest>
         get() = _downloadedCarDetails
 
-    override suspend fun getAllCarDetails(): Resource<CarDetailsListingsRequest> {
-        return try {
-            val fetchedList = carFaxApi.getCarDetailsListings()
-            val carListResult = fetchedList.body()
-            if (fetchedList.isSuccessful && carListResult != null) {
-                _downloadedCarDetails.postValue(carListResult)
-                Resource.Success(carListResult)
-            } else {
-                Resource.Error(fetchedList.message())
-            }
-        } catch (e: Exception) {
-            Resource.Error(e.message ?: "An error occurred")
+    override fun getAllCarDetails() {
+
+        val source = LiveDataReactiveStreams.fromPublisher(
+            carFaxApi.getCarDetailsListings()
+                .subscribeOn(Schedulers.io())
+        )
+
+        _downloadedCarDetails.addSource(source) {
+            _downloadedCarDetails.postValue(it)
         }
     }
 

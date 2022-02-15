@@ -1,15 +1,15 @@
 package com.foobear.carfax.data.repo
 
-import androidx.lifecycle.LiveData
 import com.foobear.carfax.data.dao.CarDetailsDataDao
 import com.foobear.carfax.data.datasource.CarDetailsDataSource
 import com.foobear.carfax.data.models.CarDetails
 import com.foobear.carfax.data.models.CarDetailsData
-import com.foobear.carfax.data.models.CarDetailsListingsRequest
+import io.reactivex.rxjava3.core.Flowable
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.Single
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class CarDetailsRepositoryImpl(
     private val carDetailsDataSource: CarDetailsDataSource,
@@ -57,20 +57,13 @@ class CarDetailsRepositoryImpl(
         return list
     }
 
-    override suspend fun getCarDetails(): LiveData<List<CarDetailsData>>? = withContext(Dispatchers.IO){
-        return@withContext try {
-            val results = carDetailsDataSource.getAllCarDetails()
-            when(results.data){
-                null -> null
-                else -> carDetailsDataDao.readAllCarDetails()
-            }
-        } catch (e: Exception) {
-            return@withContext null
-        }
+    override fun getCarDetails(): Flowable<List<CarDetailsData>> {
+            carDetailsDataSource.getAllCarDetails()
+            return carDetailsDataDao.readAllCarDetails()
     }
 
-    override suspend fun getSingleCarDetails(vin: String): LiveData<CarDetailsData> = withContext(Dispatchers.IO){
-        return@withContext carDetailsDataDao.readSingleCarDetails(vin)
+    override fun getSingleCarDetails(vin: String): Single<CarDetailsData> {
+        return carDetailsDataDao.readSingleCarDetails(vin)
     }
 
 

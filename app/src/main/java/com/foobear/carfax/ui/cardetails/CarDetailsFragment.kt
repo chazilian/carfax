@@ -21,6 +21,9 @@ import com.foobear.carfax.data.models.CarDetailsData
 import com.foobear.carfax.databinding.FragmentCarDetailsBinding
 import com.foobear.carfax.databinding.FragmentCarListBinding
 import com.foobear.carfax.ui.carlist.CarListDetailsRecyclerViewAdapter
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -46,6 +49,8 @@ class CarDetailsFragment : Fragment(), KodeinAware {
 
     private lateinit var navController: NavController
 
+    private val compositeDisposable = CompositeDisposable()
+
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
@@ -70,14 +75,14 @@ class CarDetailsFragment : Fragment(), KodeinAware {
         initView()
     }
 
-    private fun initView() = CoroutineScope(Dispatchers.IO).launch {
-        val results = viewModel.getSingleCarDetail(viewModel.carVin)
-        withContext(Dispatchers.Main) {
-            results?.observe(viewLifecycleOwner, Observer { carDetailsData ->
-                if (carDetailsData == null) return@Observer
+    private fun initView() {
+        val disposable = viewModel.getSingleCarDetail("JC1NFAEK5J0138717")
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { carDetailsData ->
                 Glide.with(requireContext())
-                        .load(carDetailsData.firstPhoto)
-                        .into(binding.ivCarPhoto)
+                    .load(carDetailsData.firstPhoto)
+                    .into(binding.ivCarPhoto)
                 binding.tvYear.text = carDetailsData.year.toString()
                 binding.tvMake.text = carDetailsData.make
                 binding.tvModel.text = carDetailsData.model
@@ -99,7 +104,14 @@ class CarDetailsFragment : Fragment(), KodeinAware {
                         startActivity(intent)
                     }
                 }
-            })
-        }
+
+            }
+
+        compositeDisposable.add(disposable)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        compositeDisposable.clear()
     }
 }

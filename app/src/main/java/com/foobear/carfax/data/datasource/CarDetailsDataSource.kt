@@ -6,5 +6,5 @@ import com.foobear.carfax.util.Resource
 
 interface CarDetailsDataSource {
     val downloadedCarDetailsRequest: LiveData<CarDetailsListingsRequest>
-    suspend fun getAllCarDetails(): Resource<CarDetailsListingsRequest>
+    fun getAllCarDetails()
 }
