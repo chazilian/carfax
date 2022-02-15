@@ -1,8 +1,11 @@
 package com.foobear.carfax.ui.carlist
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -22,7 +25,9 @@ import com.foobear.carfax.data.models.CarDetailsData
 import com.foobear.carfax.ui.cardetails.CarDetailsViewModel
 import com.foobear.carfax.ui.cardetails.CarDetailsViewModelFactory
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
@@ -70,24 +75,26 @@ class CarListDetailsFragment : Fragment(), KodeinAware {
 
     private fun populateList(carList: RecyclerView) {
 
-       val disposable = viewModel.getCarList()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                carList.adapter = CarListDetailsRecyclerViewAdapter(it,
-                    { selectedCar: CarDetailsData -> goToCarDetails(selectedCar) })
-                { selectedDealer: CarDetailsData -> callDealer(selectedDealer)
+        val call = if(isOnline()) {
+            viewModel.getCarList()
+        } else {
+            viewModel.getCarListLocal()
+        }
+        val disposable = call.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    carList.adapter = CarListDetailsRecyclerViewAdapter(it,
+                            { selectedCar: CarDetailsData -> goToCarDetails(selectedCar) })
+                    { selectedDealer: CarDetailsData ->
+                        callDealer(selectedDealer)
+                    }
                 }
-            }
 
         compositeDisposable.add(disposable)
     }
 
     private fun callDealer(carDetailsData: CarDetailsData){
-        if(ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED){
-                    return
-                }
-                val intent = Intent(Intent.ACTION_CALL)
+                val intent = Intent(Intent.ACTION_DIAL)
                 intent.data = Uri.parse("tel:" + carDetailsData.phone)
                 startActivity(intent)
     }
@@ -95,6 +102,21 @@ class CarListDetailsFragment : Fragment(), KodeinAware {
     private fun goToCarDetails(carDetailsData: CarDetailsData){
         val bundle = bundleOf("vin" to carDetailsData.vin)
         navController.navigate(R.id.action_carListDetailsFragment_to_carDetailsFragment, bundle)
+    }
+
+    private fun isOnline(): Boolean {
+        val connectivityManager = requireContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val nw      = connectivityManager.activeNetwork ?: return false
+        val actNw = connectivityManager.getNetworkCapabilities(nw) ?: return false
+        return when {
+            actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+            actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+            //for other device how are able to connect with Ethernet
+            actNw.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
+            //for check internet over Bluetooth
+            actNw.hasTransport(NetworkCapabilities.TRANSPORT_BLUETOOTH) -> true
+            else -> false
+        }
     }
 
     override fun onDestroy() {

@@ -2,7 +2,6 @@ package com.foobear.carfax.data
 
 import com.foobear.carfax.data.models.CarDetailsListingsRequest
 import io.reactivex.rxjava3.core.Flowable
-import io.reactivex.rxjava3.core.Observable
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
@@ -19,14 +18,13 @@ interface CarFaxApi {
 
     companion object{
         operator  fun invoke(
-
         ): CarFaxApi{
             val BASE_URL = "https://carfax-for-consumers.firebaseio.com/assignment.json/"
 
             val okHttpClient = OkHttpClient.Builder()
-                .connectTimeout(10, TimeUnit.SECONDS)
-                .readTimeout(10, TimeUnit.SECONDS)
-                .build()
+                    .connectTimeout(10, TimeUnit.SECONDS)
+                    .readTimeout(10, TimeUnit.SECONDS)
+                    .build()
 
             return Retrofit.Builder()
                     .baseUrl(BASE_URL)

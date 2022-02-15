@@ -4,12 +4,14 @@ import com.foobear.carfax.data.dao.CarDetailsDataDao
 import com.foobear.carfax.data.datasource.CarDetailsDataSource
 import com.foobear.carfax.data.models.CarDetails
 import com.foobear.carfax.data.models.CarDetailsData
+import com.foobear.carfax.util.NoConnectivityException
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.lang.Exception
 
 class CarDetailsRepositoryImpl(
     private val carDetailsDataSource: CarDetailsDataSource,
@@ -57,14 +59,20 @@ class CarDetailsRepositoryImpl(
         return list
     }
 
-    override fun getCarDetails(): Flowable<List<CarDetailsData>> {
+    override fun getCarListDetails(): Flowable<List<CarDetailsData>> {
+        return try {
             carDetailsDataSource.getAllCarDetails()
-            return carDetailsDataDao.readAllCarDetails()
+            carDetailsDataDao.readAllCarDetails()
+        } catch (e:NoConnectivityException){
+            carDetailsDataDao.readAllCarDetails()
+        }
     }
 
     override fun getSingleCarDetails(vin: String): Single<CarDetailsData> {
         return carDetailsDataDao.readSingleCarDetails(vin)
     }
 
-
+    override fun getCarListDetailsLocal(): Flowable<List<CarDetailsData>> {
+        return carDetailsDataDao.readAllCarDetails()
+    }
 }

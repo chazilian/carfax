@@ -11,7 +11,11 @@ class CarDetailsViewModel(private val carDetailsRepository: CarDetailsRepository
 
 
     fun getCarList(): Flowable<List<CarDetailsData>> {
-        return carDetailsRepository.getCarDetails()
+        return carDetailsRepository.getCarListDetails()
+    }
+
+    fun getCarListLocal(): Flowable<List<CarDetailsData>> {
+        return carDetailsRepository.getCarListDetailsLocal()
     }
 
     fun getSingleCarDetail(vin: String): Single<CarDetailsData> {

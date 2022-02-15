@@ -99,13 +99,10 @@ class CarDetailsFragment : Fragment(), KodeinAware {
                 binding.tvEngine.text = carDetailsData.engine
 
                 binding.tvCallDealer.setOnClickListener {
-                    if(ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED){
-                        val intent = Intent(Intent.ACTION_CALL)
+                        val intent = Intent(Intent.ACTION_DIAL)
                         intent.data = Uri.parse("tel:" + carDetailsData.phone)
                         startActivity(intent)
-                    }
                 }
-
             }
 
         compositeDisposable.add(disposable)

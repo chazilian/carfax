@@ -6,8 +6,10 @@ import io.reactivex.rxjava3.core.Single
 
 interface CarDetailsRepository {
 
-    fun getCarDetails(): Flowable<List<CarDetailsData>>
+    fun getCarListDetails(): Flowable<List<CarDetailsData>>
 
     fun getSingleCarDetails(vin: String): Single<CarDetailsData>
+
+    fun getCarListDetailsLocal(): Flowable<List<CarDetailsData>>
 
 }
