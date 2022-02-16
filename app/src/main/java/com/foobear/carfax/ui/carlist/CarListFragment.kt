@@ -1,9 +1,7 @@
 package com.foobear.carfax.ui.carlist
 
-import android.Manifest
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.Uri
@@ -11,23 +9,21 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.app.ActivityCompat
 import androidx.core.os.bundleOf
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.foobear.carfax.R
 import com.foobear.carfax.data.models.CarDetailsData
+import com.foobear.carfax.databinding.FragmentCarListBinding
 import com.foobear.carfax.ui.cardetails.CarDetailsViewModel
 import com.foobear.carfax.ui.cardetails.CarDetailsViewModelFactory
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
-import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
@@ -37,7 +33,7 @@ import org.kodein.di.generic.instance
 /**
  * A fragment representing a list of Items.
  */
-class CarListDetailsFragment : Fragment(), KodeinAware {
+class CarListFragment : Fragment(), KodeinAware {
 
     override val kodein by closestKodein()
 
@@ -49,6 +45,7 @@ class CarListDetailsFragment : Fragment(), KodeinAware {
 
     private val compositeDisposable = CompositeDisposable()
 
+    private lateinit var binding: FragmentCarListBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -56,24 +53,33 @@ class CarListDetailsFragment : Fragment(), KodeinAware {
     ): View? {
         viewModel = ViewModelProvider(this, viewModelFactory)
             .get(CarDetailsViewModel::class.java)
-        return inflater.inflate(R.layout.fragment_car_list, container, false)
+        binding = DataBindingUtil.inflate(
+                inflater,
+                R.layout.fragment_car_list,
+                container,
+                false
+        )
+        binding.lifecycleOwner = viewLifecycleOwner
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         navController = Navigation.findNavController(view)
-        initRecyclerView(view)
-
+        initRecyclerView()
     }
 
-    private fun initRecyclerView(view: View){
-        val carList = view.findViewById<RecyclerView>(R.id.rv_car_list)
-        carList.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        carList.itemAnimator = DefaultItemAnimator()
-        populateList(carList)
+    private fun initRecyclerView(){
+        binding.rvCarList.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        binding.rvCarList.itemAnimator = DefaultItemAnimator()
+        val adapter = CarListRecyclerViewAdapter(
+                { selectedCar: CarDetailsData -> goToCarDetails(selectedCar) })
+                { selectedDealer: CarDetailsData -> callDealer(selectedDealer) }
+        binding.rvCarList.adapter = adapter
+        populateList(adapter)
     }
 
-    private fun populateList(carList: RecyclerView) {
+    private fun populateList(adapter: CarListRecyclerViewAdapter) {
 
         val call = if(isOnline()) {
             viewModel.getCarList()
@@ -83,11 +89,8 @@ class CarListDetailsFragment : Fragment(), KodeinAware {
         val disposable = call.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
-                    carList.adapter = CarListDetailsRecyclerViewAdapter(it,
-                            { selectedCar: CarDetailsData -> goToCarDetails(selectedCar) })
-                    { selectedDealer: CarDetailsData ->
-                        callDealer(selectedDealer)
-                    }
+                    adapter.setList(it)
+                    adapter.notifyDataSetChanged()
                 }
 
         compositeDisposable.add(disposable)

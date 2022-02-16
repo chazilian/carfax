@@ -50,7 +50,7 @@ class CarDetailsRepositoryImpl(
                 drivetype = car.drivetype,
                 transmission = car.transmission,
                 bodytype = car.bodytype,
-                city = car.dealer.city,
+                city = car.dealer.city.toLowerCase().capitalize(),
                 state = car.dealer.state,
                 phone = car.dealer.phone,
                 firstPhoto = car.images.firstPhoto.large

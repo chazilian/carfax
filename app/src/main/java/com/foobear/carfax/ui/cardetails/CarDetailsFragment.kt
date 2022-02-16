@@ -1,33 +1,24 @@
 package com.foobear.carfax.ui.cardetails
 
-import android.Manifest
 import android.content.Intent
-import android.content.pm.PackageManager
+import android.icu.text.NumberFormat
+import android.icu.util.Currency
 import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.bumptech.glide.Glide
 import com.foobear.carfax.R
-import com.foobear.carfax.data.models.CarDetailsData
 import com.foobear.carfax.databinding.FragmentCarDetailsBinding
-import com.foobear.carfax.databinding.FragmentCarListBinding
-import com.foobear.carfax.ui.carlist.CarListDetailsRecyclerViewAdapter
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
@@ -82,13 +73,18 @@ class CarDetailsFragment : Fragment(), KodeinAware {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { carDetailsData ->
                 Glide.with(requireContext())
-                    .load(carDetailsData.firstPhoto)
-                    .into(binding.ivCarPhoto)
+                        .load(carDetailsData.firstPhoto)
+                        .placeholder(R.drawable.no_image_found)
+                        .into(binding.ivCarPhoto)
                 binding.tvYear.text = carDetailsData.year.toString()
                 binding.tvMake.text = carDetailsData.make
                 binding.tvModel.text = carDetailsData.model
                 binding.tvTrim.text = carDetailsData.trim
-                binding.tvPrice.text = "$" + carDetailsData.currentPrice.toString()
+                val format: NumberFormat = NumberFormat.getCurrencyInstance()
+                format.maximumFractionDigits = 0
+                format.currency = Currency.getInstance("USD")
+
+                binding.tvPrice.text = "$" + format.format(carDetailsData.currentPrice).toString()
                 binding.tvMileage.text = carDetailsData.mileage.toString() + " mi"
                 binding.tvCityState.text = carDetailsData.city + ", " + carDetailsData.state
                 binding.tvExteriorColor.text = carDetailsData.exteriorColor

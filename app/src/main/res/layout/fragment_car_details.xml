@@ -21,7 +21,8 @@
         <ImageView
             android:id="@+id/iv_car_photo"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="240dp"
+            android:scaleType="fitXY"
             android:src="@drawable/ic_launcher_background"
             />
 
@@ -31,7 +32,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:paddingTop="10dp"
-            android:paddingStart="8dp"
+            android:paddingStart="40dp"
             android:paddingEnd="8dp"
             >
 
@@ -77,7 +78,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:paddingTop="10dp"
-            android:paddingStart="8dp"
+            android:paddingStart="40dp"
             android:paddingEnd="8dp"
             >
 
@@ -87,7 +88,9 @@
                 android:layout_height="wrap_content"
                 android:paddingStart="5dp"
                 android:paddingEnd="5dp"
-                android:textSize="18sp"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
                 android:text="PRICE"/>
 
             <TextView
@@ -96,8 +99,9 @@
                 android:textStyle="bold"
                 android:paddingStart="5dp"
                 android:paddingEnd="5dp"
-                android:textSize="18sp"
-                android:text="|"/>
+                android:textSize="25sp"
+                android:textColor="@color/black"
+                android:text="@string/seperator"/>
 
             <TextView
                 android:id="@+id/tv_mileage"
@@ -105,13 +109,17 @@
                 android:layout_height="wrap_content"
                 android:paddingStart="5dp"
                 android:paddingEnd="5dp"
-                android:textSize="18sp"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
                 android:text="MILEAGE"/>
         </LinearLayout>
 
         <View
             android:id="@+id/v_line_seperator"
             android:layout_width="match_parent"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="10dp"
             android:layout_height="2dp"
             android:background="#D3D3D3"
             app:layout_constraintTop_toBottomOf="@+id/ll_city_state"/>
@@ -120,11 +128,12 @@
             android:id="@+id/tv_header_vehicle_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingStart="5dp"
+            android:paddingStart="40dp"
             android:paddingEnd="5dp"
-            android:textSize="18sp"
+            android:textSize="20sp"
+            android:textColor="@color/black"
             android:textStyle="bold"
-            android:text="Vehicle Info"/>
+            android:text="@string/vehicle_info"/>
 
         <LinearLayout
             android:id="@+id/ll_location"
@@ -132,7 +141,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:paddingTop="10dp"
-            android:paddingStart="8dp"
+            android:paddingStart="40dp"
             android:paddingEnd="8dp"
             >
 
@@ -160,7 +169,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:paddingTop="10dp"
-            android:paddingStart="8dp"
+            android:paddingStart="40dp"
             android:paddingEnd="8dp"
             >
 
@@ -188,7 +197,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:paddingTop="10dp"
-            android:paddingStart="8dp"
+            android:paddingStart="40dp"
             android:paddingEnd="8dp"
             >
 
@@ -216,7 +225,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:paddingTop="10dp"
-            android:paddingStart="8dp"
+            android:paddingStart="40dp"
             android:paddingEnd="8dp"
             >
 
@@ -244,7 +253,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:paddingTop="10dp"
-            android:paddingStart="8dp"
+            android:paddingStart="40dp"
             android:paddingEnd="8dp"
             >
 
@@ -272,7 +281,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:paddingTop="10dp"
-            android:paddingStart="8dp"
+            android:paddingStart="40dp"
             android:paddingEnd="8dp"
             >
 
@@ -300,8 +309,9 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:paddingTop="10dp"
-            android:paddingStart="8dp"
+            android:paddingStart="40dp"
             android:paddingEnd="8dp"
+            android:paddingBottom="15dp"
             >
 
             <TextView
@@ -325,6 +335,7 @@
         <View
             android:id="@+id/v_line_seperator_bottom"
             android:layout_width="match_parent"
+            android:layout_marginTop="10dp"
             android:layout_height="2dp"
             android:background="#000000"
             app:layout_constraintTop_toBottomOf="@+id/ll_city_state"/>
@@ -334,6 +345,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
+            android:layout_marginTop="20dp"
             android:paddingTop="15dp"
             android:paddingBottom="15dp"
             android:text="@string/call_dealer"

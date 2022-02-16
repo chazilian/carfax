@@ -8,8 +8,6 @@ import io.reactivex.rxjava3.core.Single
 
 class CarDetailsViewModel(private val carDetailsRepository: CarDetailsRepository): ViewModel() {
 
-
-
     fun getCarList(): Flowable<List<CarDetailsData>> {
         return carDetailsRepository.getCarListDetails()
     }

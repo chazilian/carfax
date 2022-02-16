@@ -19,7 +19,7 @@
     </fragment>
     <fragment
         android:id="@+id/carListDetailsFragment"
-        android:name="com.foobear.carfax.ui.carlist.CarListDetailsFragment"
+        android:name="com.foobear.carfax.ui.carlist.CarListFragment"
         android:label="fragment_car_list"
         tools:layout="@layout/fragment_car_list" >
         <action

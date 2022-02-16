@@ -40,7 +40,8 @@
             <ImageView
                 android:id="@+id/iv_car_photo"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="240dp"
+                android:scaleType="fitXY"
                 android:src="@drawable/ic_launcher_background"
                 />
 
@@ -59,6 +60,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textStyle="bold"
+                    android:textColor="@color/black"
                     android:textSize="18sp"
                     android:paddingStart="5dp"
                     android:paddingEnd="5dp"
@@ -69,6 +71,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textStyle="bold"
+                    android:textColor="@color/black"
                     android:textSize="18sp"
                     android:paddingStart="5dp"
                     android:paddingEnd="5dp"
@@ -79,6 +82,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textStyle="bold"
+                    android:textColor="@color/black"
                     android:textSize="18sp"
                     android:paddingStart="5dp"
                     android:paddingEnd="5dp"
@@ -88,6 +92,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textStyle="bold"
+                    android:textColor="@color/black"
                     android:textSize="18sp"
                     android:paddingStart="5dp"
                     android:paddingEnd="5dp"
@@ -108,6 +113,7 @@
                     android:id="@+id/tv_price"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/black"
                     android:paddingStart="5dp"
                     android:paddingEnd="5dp"
                     android:textSize="18sp"
@@ -117,15 +123,17 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textStyle="bold"
+                    android:textColor="@color/black"
                     android:paddingStart="5dp"
                     android:paddingEnd="5dp"
                     android:textSize="18sp"
-                    android:text="|"/>
+                    android:text="@string/seperator"/>
 
                 <TextView
                     android:id="@+id/tv_mileage"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/black"
                     android:paddingStart="5dp"
                     android:paddingEnd="5dp"
                     android:textSize="18sp"
@@ -147,6 +155,7 @@
                     android:id="@+id/tv_city"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/black"
                     android:paddingStart="5dp"
                     android:textSize="18sp"
                     android:text="CITY"/>
@@ -156,12 +165,14 @@
                     android:layout_height="wrap_content"
                     android:textStyle="bold"
                     android:textSize="18sp"
+                    android:textColor="@color/black"
                     android:text=","/>
 
                 <TextView
                     android:id="@+id/tv_state"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/black"
                     android:paddingStart="5dp"
                     android:paddingEnd="5dp"
                     android:textSize="18sp"
