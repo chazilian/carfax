@@ -199,7 +199,7 @@
                 android:paddingTop="15dp"
                 android:paddingBottom="15dp"
                 android:text="@string/call_dealer"
-                android:textColor="#1F51FF"
+                android:textColor="#415EEF"
                 android:textSize="25sp"
                 android:textStyle="bold" />
 

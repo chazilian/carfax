@@ -1,7 +1,6 @@
 package com.foobear.carfax.ui.carlist
 
 import android.icu.text.NumberFormat
-import android.icu.util.Currency
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
@@ -57,11 +56,11 @@ class CarListViewHolder(private val binding: CarListDetailBinding) : RecyclerVie
         binding.tvMake.text = carDetailsData.make
         binding.tvModel.text = carDetailsData.model
         binding.tvTrim.text = carDetailsData.trim
-        val format: NumberFormat = NumberFormat.getCurrencyInstance()
-        format.maximumFractionDigits = 0
-        format.currency = Currency.getInstance("USD")
 
-        binding.tvPrice.text = "$" + format.format(carDetailsData.currentPrice).toString()
+        val formatter: NumberFormat = NumberFormat.getCurrencyInstance()
+        formatter.maximumFractionDigits = 0
+        binding.tvPrice.text = formatter.format(carDetailsData.currentPrice).toString()
+
         binding.tvMileage.text = carDetailsData.mileage.toString() + " mi"
         binding.tvCity.text = carDetailsData.city
         binding.tvState.text = carDetailsData.state

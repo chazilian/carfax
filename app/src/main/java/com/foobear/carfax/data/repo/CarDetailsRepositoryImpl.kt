@@ -6,12 +6,10 @@ import com.foobear.carfax.data.models.CarDetails
 import com.foobear.carfax.data.models.CarDetailsData
 import com.foobear.carfax.util.NoConnectivityException
 import io.reactivex.rxjava3.core.Flowable
-import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import java.lang.Exception
 
 class CarDetailsRepositoryImpl(
     private val carDetailsDataSource: CarDetailsDataSource,

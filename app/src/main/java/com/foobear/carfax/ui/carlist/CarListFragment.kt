@@ -1,9 +1,6 @@
 package com.foobear.carfax.ui.carlist
 
-import android.content.Context
 import android.content.Intent
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -20,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.foobear.carfax.R
 import com.foobear.carfax.data.models.CarDetailsData
 import com.foobear.carfax.databinding.FragmentCarListBinding
+import com.foobear.carfax.network.OfflineService
 import com.foobear.carfax.ui.cardetails.CarDetailsViewModel
 import com.foobear.carfax.ui.cardetails.CarDetailsViewModelFactory
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -81,7 +79,7 @@ class CarListFragment : Fragment(), KodeinAware {
 
     private fun populateList(adapter: CarListRecyclerViewAdapter) {
 
-        val call = if(isOnline()) {
+        val call = if(OfflineService.isOnline(requireContext())) {
             viewModel.getCarList()
         } else {
             viewModel.getCarListLocal()
@@ -105,21 +103,6 @@ class CarListFragment : Fragment(), KodeinAware {
     private fun goToCarDetails(carDetailsData: CarDetailsData){
         val bundle = bundleOf("vin" to carDetailsData.vin)
         navController.navigate(R.id.action_carListDetailsFragment_to_carDetailsFragment, bundle)
-    }
-
-    private fun isOnline(): Boolean {
-        val connectivityManager = requireContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val nw      = connectivityManager.activeNetwork ?: return false
-        val actNw = connectivityManager.getNetworkCapabilities(nw) ?: return false
-        return when {
-            actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
-            actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
-            //for other device how are able to connect with Ethernet
-            actNw.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
-            //for check internet over Bluetooth
-            actNw.hasTransport(NetworkCapabilities.TRANSPORT_BLUETOOTH) -> true
-            else -> false
-        }
     }
 
     override fun onDestroy() {

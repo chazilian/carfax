@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/carfax_nav"
-    app:startDestination="@id/carListDetailsFragment">
+    app:startDestination="@id/carListFragment">
 
     <fragment
         android:id="@+id/carDetailsFragment"
@@ -12,13 +12,13 @@
         tools:layout="@layout/fragment_car_details" >
         <action
             android:id="@+id/action_carDetailsFragment_to_carListDetailsFragment"
-            app:destination="@id/carListDetailsFragment" />
+            app:destination="@id/carListFragment" />
         <argument
             android:name="vin"
             app:argType="string" />
     </fragment>
     <fragment
-        android:id="@+id/carListDetailsFragment"
+        android:id="@+id/carListFragment"
         android:name="com.foobear.carfax.ui.carlist.CarListFragment"
         android:label="fragment_car_list"
         tools:layout="@layout/fragment_car_list" >

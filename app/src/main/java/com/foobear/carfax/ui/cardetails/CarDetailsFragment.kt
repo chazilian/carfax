@@ -2,7 +2,6 @@ package com.foobear.carfax.ui.cardetails
 
 import android.content.Intent
 import android.icu.text.NumberFormat
-import android.icu.util.Currency
 import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -23,11 +22,6 @@ import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
 
-/**
- * A simple [Fragment] subclass.
- * Use the [CarDetailsFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class CarDetailsFragment : Fragment(), KodeinAware {
 
     override val kodein by closestKodein()
@@ -80,11 +74,11 @@ class CarDetailsFragment : Fragment(), KodeinAware {
                 binding.tvMake.text = carDetailsData.make
                 binding.tvModel.text = carDetailsData.model
                 binding.tvTrim.text = carDetailsData.trim
-                val format: NumberFormat = NumberFormat.getCurrencyInstance()
-                format.maximumFractionDigits = 0
-                format.currency = Currency.getInstance("USD")
 
-                binding.tvPrice.text = "$" + format.format(carDetailsData.currentPrice).toString()
+                val formatter: NumberFormat = NumberFormat.getCurrencyInstance()
+                formatter.maximumFractionDigits = 0
+                binding.tvPrice.text = formatter.format(carDetailsData.currentPrice).toString()
+
                 binding.tvMileage.text = carDetailsData.mileage.toString() + " mi"
                 binding.tvCityState.text = carDetailsData.city + ", " + carDetailsData.state
                 binding.tvExteriorColor.text = carDetailsData.exteriorColor
