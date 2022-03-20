@@ -9,15 +9,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.bumptech.glide.Glide
 import com.foobear.carfax.R
 import com.foobear.carfax.databinding.FragmentCarDetailsBinding
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.disposables.CompositeDisposable
-import io.reactivex.rxjava3.schedulers.Schedulers
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
@@ -33,8 +31,6 @@ class CarDetailsFragment : Fragment(), KodeinAware {
     private lateinit var binding: FragmentCarDetailsBinding
 
     private lateinit var navController: NavController
-
-    private val compositeDisposable = CompositeDisposable()
 
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
@@ -62,44 +58,38 @@ class CarDetailsFragment : Fragment(), KodeinAware {
 
     private fun initView() {
         val vin = arguments?.get("vin").toString()
-        val disposable = viewModel.getSingleCarDetail(vin)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { carDetailsData ->
-                Glide.with(requireContext())
-                        .load(carDetailsData.firstPhoto)
-                        .placeholder(R.drawable.no_image_found)
-                        .into(binding.ivCarPhoto)
-                binding.tvYear.text = carDetailsData.year.toString()
-                binding.tvMake.text = carDetailsData.make
-                binding.tvModel.text = carDetailsData.model
-                binding.tvTrim.text = carDetailsData.trim
+       viewModel.getSingleCarDetail(vin).observe(viewLifecycleOwner, Observer { carDetailsData ->
+           Glide.with(requireContext())
+               .load(carDetailsData.firstPhoto)
+               .placeholder(R.drawable.no_image_found)
+               .into(binding.ivCarPhoto)
+           binding.tvYear.text = carDetailsData.year.toString()
+           binding.tvMake.text = carDetailsData.make
+           binding.tvModel.text = carDetailsData.model
+           binding.tvTrim.text = carDetailsData.trim
 
-                val formatter: NumberFormat = NumberFormat.getCurrencyInstance()
-                formatter.maximumFractionDigits = 0
-                binding.tvPrice.text = formatter.format(carDetailsData.currentPrice).toString()
+           val formatter: NumberFormat = NumberFormat.getCurrencyInstance()
+           formatter.maximumFractionDigits = 0
+           binding.tvPrice.text = formatter.format(carDetailsData.currentPrice).toString()
 
-                binding.tvMileage.text = carDetailsData.mileage.toString() + " mi"
-                binding.tvCityState.text = carDetailsData.city + ", " + carDetailsData.state
-                binding.tvExteriorColor.text = carDetailsData.exteriorColor
-                binding.tvInteriorColor.text = carDetailsData.interiorColor
-                binding.tvDriveType.text = carDetailsData.drivetype
-                binding.tvTransmission.text = carDetailsData.transmission
-                binding.tvBodyType.text = carDetailsData.bodytype
-                binding.tvEngine.text = carDetailsData.engine
+           binding.tvMileage.text = carDetailsData.mileage.toString() + " mi"
+           binding.tvCityState.text = carDetailsData.city + ", " + carDetailsData.state
+           binding.tvExteriorColor.text = carDetailsData.exteriorColor
+           binding.tvInteriorColor.text = carDetailsData.interiorColor
+           binding.tvDriveType.text = carDetailsData.drivetype
+           binding.tvTransmission.text = carDetailsData.transmission
+           binding.tvBodyType.text = carDetailsData.bodytype
+           binding.tvEngine.text = carDetailsData.engine
 
-                binding.tvCallDealer.setOnClickListener {
-                        val intent = Intent(Intent.ACTION_DIAL)
-                        intent.data = Uri.parse("tel:" + carDetailsData.phone)
-                        startActivity(intent)
-                }
-            }
-
-        compositeDisposable.add(disposable)
+           binding.tvCallDealer.setOnClickListener {
+               val intent = Intent(Intent.ACTION_DIAL)
+               intent.data = Uri.parse("tel:" + carDetailsData.phone)
+               startActivity(intent)
+           }
+       })
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        compositeDisposable.clear()
     }
 }

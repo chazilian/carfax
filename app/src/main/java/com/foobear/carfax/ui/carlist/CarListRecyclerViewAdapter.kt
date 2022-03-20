@@ -9,11 +9,11 @@ import com.bumptech.glide.Glide
 import com.foobear.carfax.R
 import com.foobear.carfax.data.models.CarDetailsData
 import com.foobear.carfax.databinding.CarListDetailBinding
+import com.foobear.carfax.ui.OnCarClickListener
 
 
 class CarListRecyclerViewAdapter(
-    private val clickListener: (CarDetailsData) -> Unit,
-    private val dealerListener: (CarDetailsData) -> Unit
+    private val onCarClickListener: OnCarClickListener
 ) : RecyclerView.Adapter<CarListViewHolder>() {
 
     private val values = ArrayList<CarDetailsData>()
@@ -26,11 +26,11 @@ class CarListRecyclerViewAdapter(
             parent,
             false
         )
-        return CarListViewHolder(binding)
+        return CarListViewHolder(binding, onCarClickListener)
     }
 
     override fun onBindViewHolder(holder: CarListViewHolder, position: Int) {
-        holder.bind(values[position], clickListener, dealerListener)
+        holder.bind(values[position])
     }
 
     override fun getItemCount(): Int = values.size
@@ -39,15 +39,28 @@ class CarListRecyclerViewAdapter(
         values.clear()
         values.addAll(list)
     }
+
+    fun getItem(position: Int): CarDetailsData {
+        return values[position]
+    }
 }
 
-class CarListViewHolder(private val binding: CarListDetailBinding) : RecyclerView.ViewHolder(binding.root) {
+class CarListViewHolder(
+    private val binding: CarListDetailBinding,
+    private val onCarClickListener: OnCarClickListener
+) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(
-        carDetailsData: CarDetailsData,
-        clickListener: (CarDetailsData) -> Unit,
-        dealerListener: (CarDetailsData) -> Unit
-    ){
+    init {
+        binding.tvCallDealer.setOnClickListener {
+            onCarClickListener.onDealerClick(absoluteAdapterPosition)
+        }
+
+        binding.llSelectable.setOnClickListener {
+            onCarClickListener.onCarClick(absoluteAdapterPosition)
+        }
+    }
+
+    fun bind(carDetailsData: CarDetailsData){
         Glide.with(binding.root)
                 .load(carDetailsData.firstPhoto)
                 .placeholder(R.drawable.no_image_found)
@@ -64,12 +77,6 @@ class CarListViewHolder(private val binding: CarListDetailBinding) : RecyclerVie
         binding.tvMileage.text = carDetailsData.mileage.toString() + " mi"
         binding.tvCity.text = carDetailsData.city
         binding.tvState.text = carDetailsData.state
-        binding.tvCallDealer.setOnClickListener {
-            dealerListener(carDetailsData)
-        }
-        binding.llSelectable.setOnClickListener {
-            clickListener(carDetailsData)
-        }
     }
 
 }

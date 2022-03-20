@@ -3,6 +3,7 @@ package com.foobear.carfax.data
 import com.foobear.carfax.data.models.CarDetailsListingsRequest
 import io.reactivex.rxjava3.core.Flowable
 import okhttp3.OkHttpClient
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -12,9 +13,9 @@ import java.util.concurrent.TimeUnit
 interface CarFaxApi {
 
     @GET(".")
-    fun getCarDetailsListings(
+    suspend fun getCarDetailsListings(
 
-    ): Flowable<CarDetailsListingsRequest>
+    ): Response<CarDetailsListingsRequest>
 
     companion object{
         operator  fun invoke(

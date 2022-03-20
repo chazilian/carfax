@@ -1,12 +1,13 @@
 package com.foobear.carfax.data.repo
 
+import androidx.lifecycle.LiveData
 import com.foobear.carfax.data.dao.CarDetailsDataDao
 import com.foobear.carfax.data.datasource.CarDetailsDataSource
 import com.foobear.carfax.data.models.CarDetails
 import com.foobear.carfax.data.models.CarDetailsData
+import com.foobear.carfax.data.models.CarDetailsListingsRequest
 import com.foobear.carfax.util.NoConnectivityException
-import io.reactivex.rxjava3.core.Flowable
-import io.reactivex.rxjava3.core.Single
+import com.foobear.carfax.util.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -57,20 +58,19 @@ class CarDetailsRepositoryImpl(
         return list
     }
 
-    override fun getCarListDetails(): Flowable<List<CarDetailsData>> {
+    override suspend fun getCarListDetails(): Resource<CarDetailsListingsRequest?> {
         return try {
-            carDetailsDataSource.getAllCarDetails()
-            carDetailsDataDao.readAllCarDetails()
+            return carDetailsDataSource.getAllCarDetails()
         } catch (e:NoConnectivityException){
-            carDetailsDataDao.readAllCarDetails()
+            Resource.error("Error", null)
         }
     }
 
-    override fun getSingleCarDetails(vin: String): Single<CarDetailsData> {
+    override fun getSingleCarDetails(vin: String): LiveData<CarDetailsData> {
         return carDetailsDataDao.readSingleCarDetails(vin)
     }
 
-    override fun getCarListDetailsLocal(): Flowable<List<CarDetailsData>> {
+    override fun getCarListDetailsLocal(): LiveData<List<CarDetailsData>> {
         return carDetailsDataDao.readAllCarDetails()
     }
 }
